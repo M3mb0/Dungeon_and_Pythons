@@ -19,7 +19,6 @@ class TextFunction:
 
     @staticmethod
     def wizard_message():
-        playsound(r'C:\Users\ravva\PycharmProjects\Dungeon and Pythons\Music_Game\Main_Menu.wav', False)
         print("""Congratulations, grand wizard!
           ->  Wizards were
           the scholars of 
@@ -34,7 +33,6 @@ class TextFunction:
 
     @staticmethod
     def warrior_message():
-        playsound(r'C:\Users\ravva\PycharmProjects\Dungeon and Pythons\Music_Game\Main_Menu.wav', False)
         print("""Congratulations, great warrior!
           ->  Warriors were
           high regarded in
@@ -53,5 +51,15 @@ class TextFunction:
             print("""Great!
             Let's fight for this realm!
         """)
+            TextFunction.ask_type_of_char(user)
+            return True
         elif user == 'n':
             print('Hope you will come back soon.The land needs you')
+            return False
+
+    @staticmethod
+    def ask_type_of_char(user):
+        if user == '1':
+            TextFunction.wizard_message()
+        elif user == '2':
+            TextFunction.warrior_message()
