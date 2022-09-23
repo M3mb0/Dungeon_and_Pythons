@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import winsound
+from Enemy import *
 
 
 def my_print(text):
@@ -21,10 +22,11 @@ def my_input(text):
 
 
 def clear_screen():
+    time.sleep(1)
     os.system('cls')
 
 
-class TextFunction:
+class Start:
 
     @staticmethod
     def stop_sound():
@@ -38,6 +40,11 @@ class TextFunction:
     @staticmethod
     def play_sound_exploring():
         winsound.PlaySound(r'C:\Users\ravva\PycharmProjects\Dungeon and Pythons\Music_Game\Exploring.wav',
+                           winsound.SND_ASYNC + winsound.SND_LOOP)
+
+    @staticmethod
+    def play_sound_fight():
+        winsound.PlaySound(r'C:\Users\ravva\PycharmProjects\Dungeon and Pythons\Music_Game\BattleFinal.wav',
                            winsound.SND_ASYNC + winsound.SND_LOOP)
 
     @staticmethod
@@ -87,7 +94,7 @@ class TextFunction:
             my_print("""Great!
             Let's fight for this realm!
         """)
-            TextFunction.ask_type_of_char(user)
+            Start.ask_type_of_char(user)
             return True
         elif user == 'n':
             my_print('Hope you will come back soon.The land needs you')
@@ -96,9 +103,9 @@ class TextFunction:
     @staticmethod
     def ask_type_of_char(user):
         if user == '1':
-            TextFunction.wizard_message()
+            Start.wizard_message()
         elif user == '2':
-            TextFunction.warrior_message()
+            Start.warrior_message()
 
     @staticmethod
     def choosing_path(user):
@@ -111,7 +118,7 @@ class TextFunction:
             ''')
         elif user == '2':
             my_print('''
-            This town is no ruled by some scary creatures and all humans were kill by them.
+            This town is now ruled by some scary creatures and all humans were kill by them.
             So keep an eye out!
             In this town you can find hidden chests with powerful items 
             so be sure to collect them
@@ -123,3 +130,35 @@ class TextFunction:
             In this dungeon you can find hidden chests with powerful items 
             so be sure to collect them
             ''')
+
+    @staticmethod
+    def action():
+        clear_screen()
+        Start.choosing_path(my_input('''Now let's go to destroy our enemies.
+                        You have arrived on a crossroad with 3 paths and you have to choose one!
+                        1. To the forest
+                        2. To the town
+                        3. To the dungeon
+                        Please select 1, 2 or 3\n'''))
+        clear_screen()
+        if my_input('''You have found a chest!
+                You can choose to open it and getting a better or worse weapon and armor
+                or you can leave it and fight using your own items.
+                What it will be?
+                Do you risk or not?
+                Type -y- to risk or -n- to keep your items\n''') == 'y':
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def chose_enemy():
+        goblin = Goblin()
+        orc = Orc()
+        troll = Troll()
+        enemy_list = [goblin, orc, troll]
+        enemy = random.choice(enemy_list)
+        my_print(f'Your opponent is an {enemy.type_of} and has {enemy.hp} HP, {enemy.defence}'
+                 f' defence points and he hits with a power of {enemy.power}\n')
+        clear_screen()
+        return enemy
