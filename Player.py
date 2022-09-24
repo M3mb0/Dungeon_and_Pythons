@@ -1,5 +1,5 @@
 import random
-
+import math
 
 class Player:
 
@@ -12,8 +12,11 @@ class Player:
         self.armor = armor
 
     def attack(self, user):
-        user.hp -= self.power - user.defence
-        user.defence -= 5
+        if self.power <= user.defence:
+            user.hp = user.hp
+        else:
+            user.hp -= self.power - user.defence
+            user.defence -= 5
 
     def gear_up(self):
         self.power += self.weapon
@@ -32,5 +35,5 @@ class Wizard(Player):
 
 class Warrior(Player):
 
-    def __init__(self, name, hp=1200, power=50, defence=50, weapon=100, armor=20):
+    def __init__(self, name, hp=800, power=60, defence=60, weapon=100, armor=20):
         super().__init__(name, hp, power, defence, weapon, armor)

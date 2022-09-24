@@ -12,25 +12,31 @@ class Enemy:
 
     def attack(self, user):
         if random.randint(1, 100) <= self.critical:
-            user.hp -= (self.power - user.defence) * 2
-            user.defence -= 5
+            if self.power <= user.defence:
+                user.hp = user.hp
+            else:
+                user.hp -= (self.power - user.defence) * 2
+                user.defence -= 5
         else:
-            user.hp -= self.power - user.defence
-            user.defence -= 5
+            if self.power <= user.defence:
+                user.hp = user.hp
+            else:
+                user.hp -= self.power - user.defence
+                user.defence -= 5
 
 
 class Goblin(Enemy):
 
-    def __init__(self, type_of='Goblin', hp=500, power=70, defence=10):
+    def __init__(self, type_of='Goblin', hp=500, power=70, defence=25):
         super().__init__(type_of, hp, power, defence)
         self.critical = 10
 
 
 class Orc(Enemy):
 
-    def __init__(self, type_of='Orc', hp=800, power=100, defence=50):
+    def __init__(self, type_of='Orc', hp=900, power=120, defence=50):
         super().__init__(type_of, hp, power, defence)
-        self.critical = 20
+        self.critical = 25
 
 
 class Troll(Enemy):
