@@ -1,29 +1,6 @@
-import os
-import sys
-import time
-import winsound
+from useful_function import *
 from Enemy import *
-
-
-def my_print(text):
-    for character in text:
-        sys.stdout.write(character)
-        sys.stdout.flush()
-        time.sleep(0.05)
-
-
-def my_input(text):
-    for character in text:
-        sys.stdout.write(character)
-        sys.stdout.flush()
-        time.sleep(0.05)
-    value = input()
-    return value
-
-
-def clear_screen():
-    time.sleep(1)
-    os.system('cls')
+import winsound
 
 
 class Start:
@@ -133,13 +110,14 @@ class Start:
 
     @staticmethod
     def action():
-        clear_screen()
-        Start.choosing_path(my_input('''Now let's go to destroy our enemies.
+        user_path = my_input('''Now let's go to destroy our enemies.
                         You have arrived on a crossroad with 3 paths and you have to choose one!
                         1. To the forest
                         2. To the town
                         3. To the dungeon
-                        Please select 1, 2 or 3\n'''))
+                        Please select 1, 2 or 3\n''')
+        clear_screen()
+        Start.choosing_path(user_path)
         clear_screen()
         if my_input('''You have found a chest!
                 You can choose to open it and getting a better or worse weapon and armor
