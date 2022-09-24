@@ -1,5 +1,6 @@
 from useful_function import *
 from Enemy import *
+from Player import *
 import winsound
 
 
@@ -52,9 +53,9 @@ class Start:
         """)
 
     @staticmethod
-    def warrior_message():
-        my_print("""Congratulations, great warrior!
-          ->  Warriors were
+    def knight_message():
+        my_print("""Congratulations, great knight!
+          ->  Knights were
           high regarded in
           Hinterlands,as they
           were the only
@@ -66,15 +67,17 @@ class Start:
         """)
 
     @staticmethod
-    def ask_if_play(user):
-        if user == 'y':
-            my_print("""Great!
-            Let's fight for this realm!
-        """)
-            Start.ask_type_of_char(user)
+    def play_again():
+        user_answer = my_input("""Do you want to play again?
+        Press \'y\' to play or press any key to leave the game\n""")
+        clear_screen()
+        if user_answer == 'y':
+            Start.stop_sound()
+            Start.play_sound_intro()
             return True
-        elif user == 'n':
-            my_print('Hope you will come back soon.The land needs you')
+        else:
+            my_print('''The realm needs you!!!
+            Let's hope you will come back soon.''')
             return False
 
     @staticmethod
@@ -82,7 +85,7 @@ class Start:
         if user == '1':
             Start.wizard_message()
         elif user == '2':
-            Start.warrior_message()
+            Start.knight_message()
 
     @staticmethod
     def choosing_path(user):
@@ -115,16 +118,17 @@ class Start:
                         1. To the forest
                         2. To the town
                         3. To the dungeon
-                        Please select 1, 2 or 3\n''')
+        Please select 1, 2 or 3\n''')
         clear_screen()
         Start.choosing_path(user_path)
         clear_screen()
-        if my_input('''You have found a chest!
+        user_risk = my_input('''You have found a chest!
                 You can choose to open it and getting a better or worse weapon and armor
                 or you can leave it and fight using your own items.
                 What it will be?
                 Do you risk or not?
-                Type -y- to risk or -n- to keep your items\n''') == 'y':
+        Type \'y\' to risk or \'n\' to keep your items\n''')
+        if user_risk == 'y':
             return True
         else:
             return False
@@ -140,3 +144,95 @@ class Start:
                  f' defence points and he hits with a power of {enemy.power}\n')
         clear_screen()
         return enemy
+
+    @staticmethod
+    def player_no_chest(char):
+        clear_screen()
+        char.gear_up()
+        my_print(f'Your power is {char.power} and your armor is {char.defence}\n')
+        Start.stop_sound()
+        Start.play_sound_fight()
+
+    @staticmethod
+    def player_open_chest(char):
+        clear_screen()
+        char.open_chest()
+        my_print(f'You have found a {char.weapon_type} with power of {char.weapon} and a {char.armor_type} '
+                 f'with extra defence of {char.armor}\n')
+        char.gear_up()
+        my_print(f'Your new power is {char.power} and your new armor is {char.defence}\n')
+        Start.stop_sound()
+        Start.play_sound_fight()
+
+    @staticmethod
+    def battle(enemy, char):
+        char.attack(enemy)
+        my_print(f'You are attacking with a power of {char.power}, your amor has {char.defence} '
+                 f'durability and {char.hp} HP left\n')
+        enemy.attack(char)
+        my_print(f'{enemy.type_of} is attacking you with a power of {enemy.power} and he has '
+                 f'{enemy.critical}% '
+                 f'chance to deal double damage. {enemy.type_of} armor has {enemy.defence} points and '
+                 f'{enemy.hp} HP left\n')
+        if char.hp <= 0:
+            my_print(f'''Our {char.type_of} has been killed by a powerful {enemy.type_of}!!!
+                            Rest in peace grand {char.type_of}\n''')
+        elif enemy.hp <= 0:
+            my_print(f'Well done grand {char.type_of}!!! You defeated the {enemy.type_of}\n')
+
+    @staticmethod
+    def fighting_scene(char):
+        clear_screen()
+        Start.stop_sound()
+        Start.play_sound_exploring()
+        if Start.action():
+            Start.player_open_chest(char)
+            enemy = Start.chose_enemy()
+            while True:
+                Start.battle(enemy, char)
+                if char.hp <= 0 or enemy.hp <= 0:
+                    break
+        else:
+            Start.player_no_chest(char)
+            enemy = Start.chose_enemy()
+            while True:
+                Start.battle(enemy, char)
+                if char.hp <= 0 or enemy.hp <= 0:
+                    break
+
+    @staticmethod
+    def game():
+        user_name = my_input('Enter your name brave warrior: ')
+        clear_screen()
+        user_char = my_input(f"""What character do you want to play {user_name}:
+                            1. Wizard
+                            2. Knight
+        Please select 1 or 2.\n""")
+        clear_screen()
+        Start.ask_type_of_char(user_char)
+        clear_screen()
+        if user_char == '1':
+            wizard = Wizard(user_name)
+            my_print(f'Thank you wizard {wizard.name} for choosing to protect us')
+            Start.fighting_scene(wizard)
+        elif user_char == '2':
+            knight = Knight(user_name)
+            my_print(f'Thank you Sir {knight.name} for choosing to protect us')
+            Start.fighting_scene(knight)
+
+    @staticmethod
+    def game_intro():
+        Start.play_sound_intro()
+        Start.intro_message()
+        user = my_input('''Do you want to play? 
+        Press \'y\'to play or press any key exit the game\n''')
+        clear_screen()
+        if user == 'y':
+            my_print("""Great!
+            Let's fight for this realm!
+        """)
+            Start.ask_type_of_char(user)
+            return True
+        else:
+            my_print('Hope you will come back soon.The land needs you')
+            return False
