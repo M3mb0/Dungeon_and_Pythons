@@ -1,5 +1,5 @@
 import random
-import math
+
 
 class Player:
 
@@ -14,6 +14,7 @@ class Player:
     def attack(self, user):
         if self.power <= user.defence:
             user.hp = user.hp
+            user.defence -= 5
         else:
             user.hp -= self.power - user.defence
             user.defence -= 5
@@ -29,11 +30,17 @@ class Player:
 
 class Wizard(Player):
 
-    def __init__(self, name, hp=500, power=120, defence=30, weapon=100, armor=20):
+    def __init__(self, name, hp=500, power=150, defence=30, weapon=200, armor=20):
         super().__init__(name, hp, power, defence, weapon, armor)
+        self.weapon_type = 'wand'
+        self.armor_type = 'robe'
+        self.type_of = 'wizard'
 
 
-class Warrior(Player):
+class Knight(Player):
 
-    def __init__(self, name, hp=800, power=60, defence=60, weapon=100, armor=20):
+    def __init__(self, name, hp=800, power=60, defence=60, weapon=100, armor=40):
         super().__init__(name, hp, power, defence, weapon, armor)
+        self.weapon_type = 'sword'
+        self.armor_type = 'armor'
+        self.type_of = 'knight'
