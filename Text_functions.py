@@ -127,7 +127,7 @@ class Start:
                 or you can leave it and fight using your own items.
                 What it will be?
                 Do you risk or not?
-        Type \'y\' to risk or \'n\' to keep your items\n''')
+        Type \'y\' to risk or press any key to keep your items\n''')
         if user_risk == 'y':
             return True
         else:
@@ -204,21 +204,27 @@ class Start:
     def game():
         user_name = my_input('Enter your name brave warrior: ')
         clear_screen()
-        user_char = my_input(f"""What character do you want to play {user_name}:
-                            1. Wizard
-                            2. Knight
-        Please select 1 or 2.\n""")
-        clear_screen()
-        Start.ask_type_of_char(user_char)
-        clear_screen()
-        if user_char == '1':
-            wizard = Wizard(user_name)
-            my_print(f'Thank you wizard {wizard.name} for choosing to protect us')
-            Start.fighting_scene(wizard)
-        elif user_char == '2':
-            knight = Knight(user_name)
-            my_print(f'Thank you Sir {knight.name} for choosing to protect us')
-            Start.fighting_scene(knight)
+        while True:
+            user_char = my_input(f"""What character do you want to play {user_name}:
+                                1. Wizard
+                                2. Knight
+            Please select 1 or 2.\n""")
+            clear_screen()
+            Start.ask_type_of_char(user_char)
+            clear_screen()
+            if user_char == '1':
+                wizard = Wizard(user_name)
+                my_print(f'Thank you wizard {wizard.name} for choosing to protect us')
+                Start.fighting_scene(wizard)
+                break
+            elif user_char == '2':
+                knight = Knight(user_name)
+                my_print(f'Thank you Sir {knight.name} for choosing to protect us')
+                Start.fighting_scene(knight)
+                break
+            else:
+                my_print('Please enter 1 or 2 too continue!\n')
+                continue
 
     @staticmethod
     def game_intro():
