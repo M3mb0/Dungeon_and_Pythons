@@ -10,6 +10,8 @@ class Player:
         self.defence = defence
         self.weapon = weapon
         self.armor = armor
+        self.experience = 0
+        self.level = 1
 
     def attack(self, user):
         if self.power <= user.defence:
