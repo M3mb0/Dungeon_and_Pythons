@@ -8,6 +8,7 @@ class Enemy:
         self.hp = hp
         self.power = power
         self.defence = defence
+        self.experience = None
         self.critical = None
 
     def attack(self, user):
@@ -29,20 +30,23 @@ class Enemy:
 
 class Goblin(Enemy):
 
-    def __init__(self, type_of='Goblin', hp=700, power=100, defence=40):
+    def __init__(self, type_of='Goblin', hp=800, power=120, defence=80):
         super().__init__(type_of, hp, power, defence)
         self.critical = 10
+        self.experience = 50
 
 
 class Orc(Enemy):
 
-    def __init__(self, type_of='Orc', hp=900, power=140, defence=60):
+    def __init__(self, type_of='Orc', hp=900, power=140, defence=90):
         super().__init__(type_of, hp, power, defence)
         self.critical = 25
+        self.experience = 100
 
 
 class Troll(Enemy):
 
     def __init__(self, type_of='Troll', hp=1100, power=180, defence=100):
         super().__init__(type_of, hp, power, defence)
-        self.critical = 40
+        self.critical = 35
+        self.experience = 150
