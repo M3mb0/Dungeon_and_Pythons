@@ -304,3 +304,4 @@ class Start:
         USER_PARAM['weapon'] = char.weapon
         USER_PARAM['armor'] = char.armor
         return save_data(USER_PARAM)
+
