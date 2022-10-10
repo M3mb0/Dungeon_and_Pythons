@@ -4,15 +4,15 @@ import time
 import json
 
 
-def retrive_sample_data():
+def retrieve_sample_data():
     file = open('players.json', 'r')
     result = json.load(file)
     file.close()
     return result
 
 
-def dump_dict_to_json(my_data):
-    with open("players.json", "a") as fp:
+def save_data(my_data):
+    with open("players.json", "w") as fp:
         json.dump(my_data, fp, indent=4)
 
 
