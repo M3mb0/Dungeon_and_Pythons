@@ -10,8 +10,6 @@ class Player:
         self.defence = defence
         self.weapon = weapon
         self.armor = armor
-        self.experience = 0
-        self.level = 1
 
     def attack(self, user):
         if self.power <= user.defence:
@@ -37,6 +35,8 @@ class Wizard(Player):
         self.weapon_type = 'wand'
         self.armor_type = 'robe'
         self.type_of = 'wizard'
+        self.experience = 0
+        self.level = 1
 
 
 class Knight(Player):
@@ -46,3 +46,5 @@ class Knight(Player):
         self.weapon_type = 'sword'
         self.armor_type = 'armor'
         self.type_of = 'knight'
+        self.experience = 0
+        self.level = 1
