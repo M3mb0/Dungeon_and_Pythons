@@ -3,14 +3,8 @@ from Enemy import *
 from Player import *
 import winsound
 
-USER_PARAM = {
-    'name': None,
-    'experience': 0,
-    'level': 1,
-    'hp': 0,
-    'defence': 0,
-    'power': 0
-}
+USER_PARAM = {}
+retrieve_sample_data()
 
 
 class Start:
@@ -100,10 +94,12 @@ class Start:
         clear_screen()
         if user_char == '1':
             wizard = Wizard(USER_PARAM.get('name'))
+            Start.save_data_warrior(wizard)
             my_print(f'Thank you wizard {wizard.name} for choosing to protect us')
             Start.fighting_scene(wizard)
         else:
             knight = Knight(USER_PARAM.get('name'))
+            Start.save_data_warrior(knight)
             my_print(f'Thank you Sir {knight.name} for choosing to protect us')
             Start.fighting_scene(knight)
 
@@ -128,6 +124,7 @@ class Start:
     def ask_user_name():
         user = my_input('Please enter your name brave warrior: ')
         USER_PARAM['name'] = user
+        save_data(USER_PARAM)
         clear_screen()
 
     @staticmethod
@@ -168,7 +165,7 @@ class Start:
                         1. To the forest
                         2. To the town
                         3. To the dungeon
-        Please select 1, 2 or 3(if you press any other key, you will go to the dungeon by default \n''')
+        Please select 1, 2 or 3(if you press any other key, you will go to the dungeon by default) \n''')
         clear_screen()
         Start.choosing_path(user_path)
         clear_screen()
@@ -199,6 +196,7 @@ class Start:
     def player_no_chest(char):
         clear_screen()
         char.gear_up()
+        Start.save_data_warrior(char)
         my_print(f'Your power is {char.power} and your armor is {char.defence}\n')
         Start.stop_sound()
         Start.play_sound_fight()
@@ -207,9 +205,11 @@ class Start:
     def player_open_chest(char):
         clear_screen()
         char.open_chest()
+        Start.save_data_warrior(char)
         my_print(f'You have found a {char.weapon_type} with power of {char.weapon} and a {char.armor_type} '
                  f'with extra defence of {char.armor}\n')
         char.gear_up()
+        Start.save_data_warrior(char)
         my_print(f'Your new power is {char.power} and your new armor is {char.defence}\n')
         Start.stop_sound()
         Start.play_sound_fight()
@@ -242,9 +242,7 @@ class Start:
             enemy = Start.chose_enemy()
             while True:
                 Start.battle(enemy, char)
-                if char.hp <= 0:
-                    break
-                elif enemy.hp <= 0:
+                if char.hp <= 0 or enemy.hp <= 0:
                     break
         else:
             Start.player_no_chest(char)
@@ -258,11 +256,15 @@ class Start:
     def increase_player_level(player, enemy):
         player.experience += enemy.experience
         USER_PARAM['experience'] = player.experience
+        save_data(USER_PARAM)
         while player.experience >= 100:
             player.level += 1
             USER_PARAM['level'] = player.level
+            save_data(USER_PARAM)
             player.experience -= 100
             USER_PARAM['experience'] = player.experience
+            save_data(USER_PARAM)
+            clear_screen()
             my_print('''Chose what do you want to increase:
             1. HP
             2. Defence
@@ -270,15 +272,35 @@ class Start:
             user_input = my_input(f'''Congrats!!!
             You are now level {player.level}.
             Please select 1, 2 or 3(if you press any other key, your power will be increased by default\n''')
+            clear_screen()
             if user_input == '1':
                 player.hp += player.hp * 10 / 100
                 USER_PARAM['hp'] = player.hp
+                save_data(USER_PARAM)
                 my_print(f"Your new life has {USER_PARAM.get('hp')} HP")
+                clear_screen()
             elif user_input == '2':
                 player.defence += player.defence * 10 / 100
                 USER_PARAM['defence'] = player.defence
+                save_data(USER_PARAM)
                 my_print(f"Your new defence is {USER_PARAM.get('defence')}")
+                clear_screen()
             else:
                 player.power += player.power * 10 / 100
                 USER_PARAM['power'] = player.power
+                save_data(USER_PARAM)
                 my_print(f"Your new power is {USER_PARAM.get('power')}")
+                clear_screen()
+
+    @staticmethod
+    def save_data_warrior(char):
+        USER_PARAM['name'] = char.name
+        USER_PARAM['level'] = char.level
+        USER_PARAM['experience'] = char.experience
+        USER_PARAM['type_of'] = char.type_of
+        USER_PARAM['hp'] = char.hp
+        USER_PARAM['defence'] = char.defence
+        USER_PARAM['power'] = char.power
+        USER_PARAM['weapon'] = char.weapon
+        USER_PARAM['armor'] = char.armor
+        return save_data(USER_PARAM)
