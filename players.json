@@ -1,0 +1,11 @@
+{
+    "name": "Cri",
+    "experience": 50,
+    "level": 1,
+    "type_of": "knight",
+    "hp": 800,
+    "defence": 150,
+    "power": 310,
+    "weapon": 250,
+    "armor": 90
+}
