@@ -3,6 +3,15 @@ from Enemy import *
 from Player import *
 import winsound
 
+USER_PARAM = {
+    'name': None,
+    'experience': 0,
+    'level': 1,
+    'hp': 0,
+    'defence': 0,
+    'power': 0
+}
+
 
 class Start:
 
@@ -81,10 +90,51 @@ class Start:
             return False
 
     @staticmethod
+    def game():
+        user_char = my_input(f"""What character do you want to play {USER_PARAM.get('name')}:
+                            1. Wizard
+                            2. Knight
+        Please select 1 or 2 (If you press any another key, you will play as Knight by default).\n""")
+        clear_screen()
+        Start.ask_type_of_char(user_char)
+        clear_screen()
+        if user_char == '1':
+            wizard = Wizard(USER_PARAM.get('name'))
+            my_print(f'Thank you wizard {wizard.name} for choosing to protect us')
+            Start.fighting_scene(wizard)
+        else:
+            knight = Knight(USER_PARAM.get('name'))
+            my_print(f'Thank you Sir {knight.name} for choosing to protect us')
+            Start.fighting_scene(knight)
+
+    @staticmethod
+    def game_intro():
+        Start.play_sound_intro()
+        Start.intro_message()
+        user = my_input('''Do you want to play? 
+        Press \'y\'to play or press any key exit the game\n''')
+        clear_screen()
+        if user == 'y':
+            my_print("""Great!
+            Let's fight for this realm!
+        """)
+            Start.ask_user_name()
+            return True
+        else:
+            my_print('Hope you will come back soon.The land needs you')
+            return False
+
+    @staticmethod
+    def ask_user_name():
+        user = my_input('Please enter your name brave warrior: ')
+        USER_PARAM['name'] = user
+        clear_screen()
+
+    @staticmethod
     def ask_type_of_char(user):
         if user == '1':
             Start.wizard_message()
-        elif user == '2':
+        else:
             Start.knight_message()
 
     @staticmethod
@@ -103,7 +153,7 @@ class Start:
             In this town you can find hidden chests with powerful items 
             so be sure to collect them
             ''')
-        elif user == '3':
+        else:
             my_print('''
             Dungeons are probably the scariest and you have to be aware at every sound,
             otherwise you might be taken by surprise.
@@ -118,7 +168,7 @@ class Start:
                         1. To the forest
                         2. To the town
                         3. To the dungeon
-        Please select 1, 2 or 3\n''')
+        Please select 1, 2 or 3(if you press any other key, you will go to the dungeon by default \n''')
         clear_screen()
         Start.choosing_path(user_path)
         clear_screen()
@@ -174,11 +224,13 @@ class Start:
                  f'{enemy.critical}% '
                  f'chance to deal double damage. {enemy.type_of} armor has {enemy.defence} points and '
                  f'{enemy.hp} HP left\n')
-        if char.hp <= 0:
+        if enemy.hp <= 0:
+            my_print(f'Well done grand {char.type_of}!!! You defeated the {enemy.type_of}\n')
+            Start.increase_player_level(char, enemy)
+        elif char.hp <= 0:
             my_print(f'''Our {char.type_of} has been killed by a powerful {enemy.type_of}!!!
                             Rest in peace grand {char.type_of}\n''')
-        elif enemy.hp <= 0:
-            my_print(f'Well done grand {char.type_of}!!! You defeated the {enemy.type_of}\n')
+            return char.hp, enemy.hp
 
     @staticmethod
     def fighting_scene(char):
@@ -190,7 +242,9 @@ class Start:
             enemy = Start.chose_enemy()
             while True:
                 Start.battle(enemy, char)
-                if char.hp <= 0 or enemy.hp <= 0:
+                if char.hp <= 0:
+                    break
+                elif enemy.hp <= 0:
                     break
         else:
             Start.player_no_chest(char)
@@ -201,44 +255,30 @@ class Start:
                     break
 
     @staticmethod
-    def game():
-        user_name = my_input('Enter your name brave warrior: ')
-        clear_screen()
-        while True:
-            user_char = my_input(f"""What character do you want to play {user_name}:
-                                1. Wizard
-                                2. Knight
-            Please select 1 or 2.\n""")
-            clear_screen()
-            Start.ask_type_of_char(user_char)
-            clear_screen()
-            if user_char == '1':
-                wizard = Wizard(user_name)
-                my_print(f'Thank you wizard {wizard.name} for choosing to protect us')
-                Start.fighting_scene(wizard)
-                break
-            elif user_char == '2':
-                knight = Knight(user_name)
-                my_print(f'Thank you Sir {knight.name} for choosing to protect us')
-                Start.fighting_scene(knight)
-                break
+    def increase_player_level(player, enemy):
+        player.experience += enemy.experience
+        USER_PARAM['experience'] = player.experience
+        while player.experience >= 100:
+            player.level += 1
+            USER_PARAM['level'] = player.level
+            player.experience -= 100
+            USER_PARAM['experience'] = player.experience
+            my_print('''Chose what do you want to increase:
+            1. HP
+            2. Defence
+            3. Power''')
+            user_input = my_input(f'''Congrats!!!
+            You are now level {player.level}.
+            Please select 1, 2 or 3(if you press any other key, your power will be increased by default\n''')
+            if user_input == '1':
+                player.hp += player.hp * 10 / 100
+                USER_PARAM['hp'] = player.hp
+                my_print(f"Your new life has {USER_PARAM.get('hp')} HP")
+            elif user_input == '2':
+                player.defence += player.defence * 10 / 100
+                USER_PARAM['defence'] = player.defence
+                my_print(f"Your new defence is {USER_PARAM.get('defence')}")
             else:
-                my_print('Please enter 1 or 2 too continue!\n')
-                continue
-
-    @staticmethod
-    def game_intro():
-        Start.play_sound_intro()
-        Start.intro_message()
-        user = my_input('''Do you want to play? 
-        Press \'y\'to play or press any key exit the game\n''')
-        clear_screen()
-        if user == 'y':
-            my_print("""Great!
-            Let's fight for this realm!
-        """)
-            Start.ask_type_of_char(user)
-            return True
-        else:
-            my_print('Hope you will come back soon.The land needs you')
-            return False
+                player.power += player.power * 10 / 100
+                USER_PARAM['power'] = player.power
+                my_print(f"Your new power is {USER_PARAM.get('power')}")
