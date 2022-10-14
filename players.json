@@ -1,11 +1,11 @@
 {
-    "name": "Cri",
+    "name": "Cage",
+    "level": 5,
     "experience": 50,
-    "level": 1,
-    "type_of": "knight",
-    "hp": 800,
-    "defence": 150,
-    "power": 310,
-    "weapon": 250,
-    "armor": 90
+    "type_of": "wizard",
+    "hp": 500,
+    "defence": 286.0,
+    "power": 1745.15,
+    "weapon": 450,
+    "armor": 60
 }
