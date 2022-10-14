@@ -50,3 +50,8 @@ class Troll(Enemy):
         super().__init__(type_of, hp, power, defence)
         self.critical = 35
         self.experience = 150
+
+class Python(Enemy):
+    def __init__(self, type_of='Python', hp=4400, power=600, defence=250):
+        super().__init__(type_of, hp, power, defence)
+        self.critical = 50
