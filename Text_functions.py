@@ -4,6 +4,15 @@ from Player import *
 import winsound
 
 USER_PARAM = {}
+
+
+def retrieve_sample_data():
+    global USER_PARAM
+    file = open('players.json', 'r')
+    USER_PARAM = json.load(file)
+    file.close()
+
+
 retrieve_sample_data()
 
 
@@ -75,8 +84,6 @@ class Start:
         Press \'y\' to play or press any key to leave the game\n""")
         clear_screen()
         if user_answer == 'y':
-            Start.stop_sound()
-            Start.play_sound_intro()
             return True
         else:
             my_print('''The realm needs you!!!
@@ -107,18 +114,49 @@ class Start:
     def game_intro():
         Start.play_sound_intro()
         Start.intro_message()
-        user = my_input('''Do you want to play? 
-        Press \'y\'to play or press any key exit the game\n''')
         clear_screen()
-        if user == 'y':
+        user = my_input('''What do you want to do?
+        1. Start a new game
+        2. Continue
+        3. Exit
+        Please select 1,2 or 3(If you type any other key you will exit the game!)\n''')
+        clear_screen()
+        if user == '1':
             my_print("""Great!
             Let's fight for this realm!
         """)
             Start.ask_user_name()
+            Start.game()
+            return True
+        elif user == '2':
+            Start.continue_fighting()
             return True
         else:
             my_print('Hope you will come back soon.The land needs you')
             return False
+
+    @staticmethod
+    def continue_fighting():
+        if USER_PARAM.get("type_of") == "wizard":
+            wizard = Wizard(USER_PARAM.get("name"))
+            Start.get_char_info(wizard)
+            Start.fighting_scene(wizard)
+        elif USER_PARAM.get("type_of") == "knight":
+            knight = Knight(USER_PARAM.get("name"))
+            Start.get_char_info(knight)
+            Start.fighting_scene(knight)
+
+    @staticmethod
+    def get_char_info(char):
+        char.name = USER_PARAM.get('name')
+        char.level = USER_PARAM.get('level')
+        char.experience = USER_PARAM.get('experience')
+        char.type_of = USER_PARAM.get('type_of')
+        char.hp = USER_PARAM.get('hp')
+        char.defence = USER_PARAM.get('defence')
+        char.power = USER_PARAM.get('power')
+        char.weapon = USER_PARAM.get('weapon')
+        char.armor = USER_PARAM.get('armor')
 
     @staticmethod
     def ask_user_name():
@@ -218,7 +256,7 @@ class Start:
     def battle(enemy, char):
         char.attack(enemy)
         my_print(f'You are attacking with a power of {char.power}, your amor has {char.defence} '
-                 f'durability and {char.hp} HP left\n')
+                 f'durability and {char.hp} HP left.\n')
         enemy.attack(char)
         my_print(f'{enemy.type_of} is attacking you with a power of {enemy.power} and he has '
                  f'{enemy.critical}% '
@@ -226,11 +264,33 @@ class Start:
                  f'{enemy.hp} HP left\n')
         if enemy.hp <= 0:
             my_print(f'Well done grand {char.type_of}!!! You defeated the {enemy.type_of}\n')
+            char.hp = USER_PARAM.get('hp')
+            char.defence = USER_PARAM.get('defence')
             Start.increase_player_level(char, enemy)
         elif char.hp <= 0:
             my_print(f'''Our {char.type_of} has been killed by a powerful {enemy.type_of}!!!
                             Rest in peace grand {char.type_of}\n''')
-            return char.hp, enemy.hp
+
+    @staticmethod
+    def boss_fight(boss, char):
+        while True:
+            char.attack(boss)
+            my_print(f'You are attacking with a power of {char.power}, your amor has {char.defence} '
+                     f'durability and {char.hp} HP left\n')
+            boss.attack(char)
+            my_print(f'{boss.type_of} is attacking you with a power of {boss.power} and he has '
+                     f'{boss.critical}% '
+                     f'chance to deal double damage. {boss.type_of} armor has {boss.defence} points and '
+                     f'{boss.hp} HP left\n')
+            if boss.hp <= 0:
+                my_print(f'Well done grand {char.type_of}!!! You defeated the terrifying {boss.type_of} and '
+                         f'the realm is free!\n')
+                break
+            elif char.hp <= 0:
+                my_print(f'''Our {char.type_of} has been killed by the terrifying {boss.type_of} and the 
+                            realm is destroyed!!! 
+                                        Rest in peace grand {char.type_of}\n''')
+                break
 
     @staticmethod
     def fighting_scene(char):
@@ -239,18 +299,18 @@ class Start:
         Start.play_sound_exploring()
         if Start.action():
             Start.player_open_chest(char)
-            enemy = Start.chose_enemy()
-            while True:
-                Start.battle(enemy, char)
-                if char.hp <= 0 or enemy.hp <= 0:
-                    break
+            Start.main_battle(char)
         else:
             Start.player_no_chest(char)
-            enemy = Start.chose_enemy()
-            while True:
-                Start.battle(enemy, char)
-                if char.hp <= 0 or enemy.hp <= 0:
-                    break
+            Start.main_battle(char)
+
+    @staticmethod
+    def main_battle(char):
+        enemy = Start.chose_enemy()
+        while True:
+            Start.battle(enemy, char)
+            if char.hp <= 0 or enemy.hp <= 0:
+                break
 
     @staticmethod
     def increase_player_level(player, enemy):
@@ -265,32 +325,40 @@ class Start:
             USER_PARAM['experience'] = player.experience
             save_data(USER_PARAM)
             clear_screen()
-            my_print('''Chose what do you want to increase:
+            my_print(f'''Congrats!!!
+            You are now level {player.level}.
+            Chose what do you want to increase:
             1. HP
             2. Defence
-            3. Power''')
-            user_input = my_input(f'''Congrats!!!
-            You are now level {player.level}.
-            Please select 1, 2 or 3(if you press any other key, your power will be increased by default\n''')
+            3. Power\n''')
+            user_input = my_input('''
+            Please select 1, 2 or 3(if you press any other key, your power will be increased by default)\n''')
             clear_screen()
             if user_input == '1':
                 player.hp += player.hp * 10 / 100
                 USER_PARAM['hp'] = player.hp
                 save_data(USER_PARAM)
-                my_print(f"Your new life has {USER_PARAM.get('hp')} HP")
+                my_print(f"Your new life has {USER_PARAM.get('hp')} HP\n")
                 clear_screen()
             elif user_input == '2':
                 player.defence += player.defence * 10 / 100
                 USER_PARAM['defence'] = player.defence
                 save_data(USER_PARAM)
-                my_print(f"Your new defence is {USER_PARAM.get('defence')}")
+                my_print(f"Your new defence is {USER_PARAM.get('defence')}\n")
                 clear_screen()
             else:
                 player.power += player.power * 10 / 100
                 USER_PARAM['power'] = player.power
                 save_data(USER_PARAM)
-                my_print(f"Your new power is {USER_PARAM.get('power')}")
+                my_print(f"Your new power is {USER_PARAM.get('power')}\n")
                 clear_screen()
+        if player.level >= 5:
+            Start.stop_sound()
+            Start.play_sound_fight()
+            my_print('Now you have to defeat the terrifying python to save the realm once and for all\n!!!')
+            clear_screen()
+            boss = Python()
+            Start.boss_fight(boss, player)
 
     @staticmethod
     def save_data_warrior(char):
@@ -304,4 +372,3 @@ class Start:
         USER_PARAM['weapon'] = char.weapon
         USER_PARAM['armor'] = char.armor
         return save_data(USER_PARAM)
-
