@@ -1,11 +1,11 @@
 {
-    "name": "Cage",
-    "level": 5,
-    "experience": 50,
+    "name": "Cristi",
+    "level": 3,
+    "experience": 0,
     "type_of": "wizard",
     "hp": 500,
-    "defence": 286.0,
-    "power": 1745.15,
-    "weapon": 450,
-    "armor": 60
+    "defence": 140,
+    "power": 643.5,
+    "weapon": 200,
+    "armor": 30
 }

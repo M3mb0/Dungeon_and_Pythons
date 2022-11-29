@@ -1,6 +1,8 @@
-from Text_functions import *
+"""Main script to start playing the game"""
+
+from game_functionality import Game
 
 
-if Start.game_intro():
-    while Start.play_again():
-        Start.continue_fighting()
+if Game.game_intro():
+    while Game.play_again():
+        Game.continue_fighting()
