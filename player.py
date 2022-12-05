@@ -7,13 +7,13 @@ Classes:
     --------------
     Player:
         the parent class which contain the methods applied to the children classes
-        and takes 6 arguments
+        and has 6 attributes
     Wizard:
         1st child class inherited from Player class
     Knight:
         2nd child class inherited from Player class
 
-Methods:
+Method:
     --------------
     attack:
         script used for attacking the enemy

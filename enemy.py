@@ -7,7 +7,7 @@ Classes:
     --------------
     Enemy:
         the parent class which contain the methods applied to the children classes
-        and takes 6 arguments
+        and has 6 attributes
     Goblin:
         1st child class inherited from Enemy class
     Orc:

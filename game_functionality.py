@@ -3,7 +3,7 @@
 Class:
     --------------
     Game:
-        A class with static methods only and takes no arguments.
+        A class with static methods only and has no attributes.
 Method:
     --------------
     stop_sound:
@@ -59,7 +59,7 @@ Method:
         store the player data and stats in a json file and returns it
 Function and variables:
     --------------
-    USER_PARAM:
+    user_param:
         empty dictionary
     retrieve_sample_data:
         function that reads data from json file
@@ -87,14 +87,14 @@ from enemy import Goblin, Orc, Troll, Python
 from player import Wizard, Knight
 from useful_function import save_data, my_print, my_input, clear_screen
 
-USER_PARAM = {}
+user_param = {}
 
 
 def retrieve_sample_data():
     """reading the json file and assign it to a global variable"""
-    global USER_PARAM
+    global user_param
     file = open('players.json', 'r')
-    USER_PARAM = json.load(file)
+    user_param = json.load(file)
     file.close()
 
 
@@ -102,7 +102,7 @@ retrieve_sample_data()
 
 
 class Game:
-    """A class with static methods only and takes no arguments.
+    """A class with static methods only and has no attributes.
 Method:
     --------------
     stop_sound:
@@ -241,7 +241,7 @@ Method:
         and takes no arguments.
         It also creates the characters based on user choice"""
         user_char = my_input(f"""
-        What character do you want to play {USER_PARAM.get('name')}:
+        What character do you want to play {user_param.get('name')}:
                             1. Wizard
                             2. Knight
         Please select 1 or 2 
@@ -250,12 +250,12 @@ Method:
         Game.ask_type_of_char(user_char)
         clear_screen()
         if user_char == '1':
-            wizard = Wizard(USER_PARAM.get('name'))
+            wizard = Wizard(user_param.get('name'))
             Game.save_data_warrior(wizard)
             my_print(f'Thank you wizard {wizard.name} for choosing to protect us')
             Game.fighting_scene(wizard)
         else:
-            knight = Knight(USER_PARAM.get('name'))
+            knight = Knight(user_param.get('name'))
             Game.save_data_warrior(knight)
             my_print(f'Thank you Sir {knight.name} for choosing to protect us')
             Game.fighting_scene(knight)
@@ -294,12 +294,12 @@ Method:
         """Getting player data and stats from json to continue his game,
          and it takes no arguments
         Creating new character objects based on what is stored in json file."""
-        if USER_PARAM.get("type_of") == "wizard":
-            wizard = Wizard(USER_PARAM.get("name"))
+        if user_param.get("type_of") == "wizard":
+            wizard = Wizard(user_param.get("name"))
             Game.get_char_info(wizard)
             Game.fighting_scene(wizard)
-        elif USER_PARAM.get("type_of") == "knight":
-            knight = Knight(USER_PARAM.get("name"))
+        elif user_param.get("type_of") == "knight":
+            knight = Knight(user_param.get("name"))
             Game.get_char_info(knight)
             Game.fighting_scene(knight)
 
@@ -312,23 +312,23 @@ Method:
             char: obj
                 character chosen by the player
         """
-        char.name = USER_PARAM.get('name')
-        char.level = USER_PARAM.get('level')
-        char.experience = USER_PARAM.get('experience')
-        char.type_of = USER_PARAM.get('type_of')
-        char.hp = USER_PARAM.get('hp')
-        char.defence = USER_PARAM.get('defence')
-        char.power = USER_PARAM.get('power')
-        char.weapon = USER_PARAM.get('weapon')
-        char.armor = USER_PARAM.get('armor')
+        char.name = user_param.get('name')
+        char.level = user_param.get('level')
+        char.experience = user_param.get('experience')
+        char.type_of = user_param.get('type_of')
+        char.hp = user_param.get('hp')
+        char.defence = user_param.get('defence')
+        char.power = user_param.get('power')
+        char.weapon = user_param.get('weapon')
+        char.armor = user_param.get('armor')
 
     @staticmethod
     def ask_user_name():
         """Asks the users name and store it to a json file,
         and it takes no arguments"""
         user = my_input('Please enter your name brave warrior: ')
-        USER_PARAM['name'] = user
-        save_data(USER_PARAM)
+        user_param['name'] = user
+        save_data(user_param)
         clear_screen()
 
     @staticmethod
@@ -337,8 +337,8 @@ Method:
 
         Argument:
         --------------
-            char: obj
-                player character
+            char: str
+                player's input
         """
         if user == '1':
             Game.wizard_message()
@@ -351,8 +351,8 @@ Method:
 
         Argument:
         --------------
-            char: obj
-                player character
+            char: str
+                player's input
         """
         if user == '1':
             my_print('''
@@ -481,8 +481,8 @@ Method:
                  f'{enemy.hp} HP left\n')
         if enemy.hp <= 0:
             my_print(f'Well done grand {char.type_of}!!! You defeated the {enemy.type_of}\n')
-            char.hp = USER_PARAM.get('hp')
-            char.defence = USER_PARAM.get('defence')
+            char.hp = user_param.get('hp')
+            char.defence = user_param.get('defence')
             Game.increase_player_level(char, enemy)
         elif char.hp <= 0:
             my_print(f'''Our {char.type_of} has been killed by a powerful {enemy.type_of}!!!
@@ -574,15 +574,15 @@ Method:
                 enemy character
          """
         player.experience += enemy.experience
-        USER_PARAM['experience'] = player.experience
-        save_data(USER_PARAM)
+        user_param['experience'] = player.experience
+        save_data(user_param)
         while player.experience >= 100:
             player.level += 1
-            USER_PARAM['level'] = player.level
-            save_data(USER_PARAM)
+            user_param['level'] = player.level
+            save_data(user_param)
             player.experience -= 100
-            USER_PARAM['experience'] = player.experience
-            save_data(USER_PARAM)
+            user_param['experience'] = player.experience
+            save_data(user_param)
             clear_screen()
             my_print(f'''Congrats!!!
             You are now level {player.level}.
@@ -596,21 +596,21 @@ Method:
             clear_screen()
             if user_input == '1':
                 player.hp += player.hp * 10 / 100
-                USER_PARAM['hp'] = player.hp
-                save_data(USER_PARAM)
-                my_print(f"Your new life has {USER_PARAM.get('hp')} HP\n")
+                user_param['hp'] = player.hp
+                save_data(user_param)
+                my_print(f"Your new life has {user_param.get('hp')} HP\n")
                 clear_screen()
             elif user_input == '2':
                 player.defence += player.defence * 10 / 100
-                USER_PARAM['defence'] = player.defence
-                save_data(USER_PARAM)
-                my_print(f"Your new defence is {USER_PARAM.get('defence')}\n")
+                user_param['defence'] = player.defence
+                save_data(user_param)
+                my_print(f"Your new defence is {user_param.get('defence')}\n")
                 clear_screen()
             else:
                 player.power += player.power * 10 / 100
-                USER_PARAM['power'] = player.power
-                save_data(USER_PARAM)
-                my_print(f"Your new power is {USER_PARAM.get('power')}\n")
+                user_param['power'] = player.power
+                save_data(user_param)
+                my_print(f"Your new power is {user_param.get('power')}\n")
                 clear_screen()
         if player.level >= 5:
             Game.stop_sound()
@@ -630,13 +630,13 @@ Method:
             char: obj
                 player character
         """
-        USER_PARAM['name'] = char.name
-        USER_PARAM['level'] = char.level
-        USER_PARAM['experience'] = char.experience
-        USER_PARAM['type_of'] = char.type_of
-        USER_PARAM['hp'] = char.hp
-        USER_PARAM['defence'] = char.defence
-        USER_PARAM['power'] = char.power
-        USER_PARAM['weapon'] = char.weapon
-        USER_PARAM['armor'] = char.armor
-        return save_data(USER_PARAM)
+        user_param['name'] = char.name
+        user_param['level'] = char.level
+        user_param['experience'] = char.experience
+        user_param['type_of'] = char.type_of
+        user_param['hp'] = char.hp
+        user_param['defence'] = char.defence
+        user_param['power'] = char.power
+        user_param['weapon'] = char.weapon
+        user_param['armor'] = char.armor
+        return save_data(user_param)
